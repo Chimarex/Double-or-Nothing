@@ -251,7 +251,7 @@ namespace DoubleOrNothing
                                     TSPlayer.All.SendSuccessMessage("{0} has scored {1} points in Double or Nothing and has recieved {2} {3}{4}!", user.Name, donval, rewardStack, itemById.name, plur2);
                                     if (donval >= 1024 && Config.hpBoostAt1024 == true)
                                     {
-                                        TSPlayer.All.SendSuccessMessage("Due to scoring an outstanding amount points {0} has also recieved increased hp!", user.Name);
+                                        TSPlayer.All.SendSuccessMessage("Due to scoring an outstanding amount points {0} has also recieved an increase in hp!", user.Name);
                                         user.TPlayer.statLifeMax += 25;
                                         user.TPlayer.statManaMax += 5;
                                         NetMessage.SendData((int)PacketTypes.PlayerHp, -1, -1, String.Empty, user.Index);
@@ -317,21 +317,6 @@ namespace DoubleOrNothing
                             user.SendInfoMessage("/gamble info - Displays information about a game of Double or Nothing in progress.");
                             user.SendInfoMessage("/gamble rewards - Displays rewards as set by the server administrator.");
                             user.SendInfoMessage("Starting Fee: {0} {1}{2}", Config.stackReq, iReq.name, plur);
-                            break;
-                        }
-
-                  case "debug":
-                      {
-                          Console.Write("Current User: {0}, In Progress: {1}, Current Points: {2}", currentUser, inProgress, donval);
-                          break;
-                      }
-
-                     case "hpboost":
-                        {
-                            user.TPlayer.statLifeMax += 25;
-                            user.TPlayer.statManaMax += 5;
-                            NetMessage.SendData((int)PacketTypes.PlayerHp, -1, -1, String.Empty, user.Index);
-                            NetMessage.SendData((int)PacketTypes.PlayerMana, -1, -1, String.Empty, user.Index);
                             break;
                         }
 
