@@ -8,7 +8,7 @@ using TShockAPI;
 
 namespace DoubleOrNothing
 {
-    [ApiVersion(1, 21)]
+    [ApiVersion(1, 22)]
     public class DoubleOrNothing : TerrariaPlugin
     {
         Timer Timer;
@@ -69,6 +69,7 @@ namespace DoubleOrNothing
                 }
 
             });
+            Commands.ChatCommands.Add(new Command("gamble.admin", Reload, "DoNReload"));
 
             if (File.Exists(Path.Combine(TShock.SavePath, "donconfig.json")))
             {
@@ -77,6 +78,11 @@ namespace DoubleOrNothing
             Config.Write(Path.Combine(TShock.SavePath, "donconfig.json"));
         }
 
+        void Reload(CommandArgs args)
+        {
+            Config = Config.Read(Path.Combine(TShock.SavePath, "donconfig.json"));
+            args.Player.SendSuccessMessage("Double or Nothing has been reloaded!");
+        }
 
         void DoNMain(CommandArgs args)
         {
@@ -125,8 +131,9 @@ namespace DoubleOrNothing
                                             currentUser = user.Name;
                                             t.Elapsed += new ElapsedEventHandler(OnTimedEvent); ;
                                             t.Start();
-                                            TSPlayer.All.SendSuccessMessage("{0} has started a game of Double or Nothing! Current Points: {1}", currentUser, donval);
-                                            user.SendInfoMessage("You have payed {0} {1}{2}!", Config.stackReq, iReq.name, plur);
+                                            TSPlayer.All.SendSuccessMessage("{0} has started a game of Double or Nothing!", currentUser, donval);
+                                            user.SendInfoMessage("You have paid {0} {1}{2}!", Config.stackReq, iReq.name, plur);
+                                            user.SendInfoMessage("You currently have {0} points", donval);
                                             user.SendMessage("Continue: '/gamble continue', Claim: '/gamble claim'", Color.DarkGoldenrod);
                                             user.SendMessage("You must make a decision within 15 seconds.", Color.DarkGoldenrod);
                                             return;
@@ -143,6 +150,7 @@ namespace DoubleOrNothing
 
                     case "continue":
                         {
+
                             if (inProgress == true)
                             {
                                 if (currentUser == user.Name)
@@ -181,6 +189,11 @@ namespace DoubleOrNothing
                                         }
                                     }
                                     user.SendErrorMessage("To play Double or Nothing you must have a free inventory slot!");
+                                    return;
+                                }
+                                else if (currentUser == "None")
+                                {
+                                    user.SendErrorMessage("Double or Nothing is on Cooldown!");
                                     return;
                                 }
                                 user.SendErrorMessage("Somebody else is currently playing Double or Nothing!");
