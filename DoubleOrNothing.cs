@@ -66,12 +66,12 @@ namespace DoubleOrNothing
                 HelpDesc = new[]
                 {
                            "/gamble start - Begins a game of Double or Nothing.",
+                           "/gamble help - Displays Commands And Starting Fee.",
                            "/gamble info - Displays information about a game of Double or Nothing in progress.",
                            "/gamble rewards - Displays rewards as set by the server administrator."
                 }
 
             });
-            Commands.ChatCommands.Add(new Command("gamble.admin", Reload, "DoNReload"));
 
             if (File.Exists(Path.Combine(TShock.SavePath, "donconfig.json")))
             {
@@ -94,12 +94,6 @@ namespace DoubleOrNothing
                 cd.AutoReset = false;
                 cd.Start();
             }
-        }
-
-        void Reload(CommandArgs args)
-        {
-            Config = Config.Read(Path.Combine(TShock.SavePath, "donconfig.json"));
-            args.Player.SendSuccessMessage("Double or Nothing has been reloaded!");
         }
 
         void DoNMain(CommandArgs args)
@@ -347,7 +341,23 @@ namespace DoubleOrNothing
                             user.SendInfoMessage("/gamble start - Begins a game of Double or Nothing.");
                             user.SendInfoMessage("/gamble info - Displays information about a game of Double or Nothing in progress.");
                             user.SendInfoMessage("/gamble rewards - Displays rewards as set by the server administrator.");
+                            if (user.Group.HasPermission("gamble.admin"))
+                            {
+                                user.SendInfoMessage("/gamble reload - Reloads Plugin and Config File");
+                            }
                             user.SendInfoMessage("Starting Fee: {0} {1}{2}", Config.stackReq, iReq.name, plur);
+                            break;
+                        }
+
+                    case "reload":
+                        {
+                            if (!user.Group.HasPermission("gamble.admin"))
+                            {
+                                user.SendErrorMessage("You do not have access to this command.");
+                                break;
+                            }
+                            Config = Config.Read(Path.Combine(TShock.SavePath, "donconfig.json"));
+                            user.SendSuccessMessage("Reload Successful!");
                             break;
                         }
 
