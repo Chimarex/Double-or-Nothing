@@ -41,6 +41,7 @@ namespace DoubleOrNothing
         public override void Initialize()
         {
             ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
+            ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
         }
 
         protected override void Dispose(bool disposing)
@@ -48,6 +49,7 @@ namespace DoubleOrNothing
             if (disposing)
             {
                 ServerApi.Hooks.GameInitialize.Deregister(this, OnInitialize);
+                ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave);
             }
             base.Dispose(disposing);
         }
@@ -76,6 +78,22 @@ namespace DoubleOrNothing
                 Config = Config.Read(Path.Combine(TShock.SavePath, "donconfig.json"));
             }
             Config.Write(Path.Combine(TShock.SavePath, "donconfig.json"));
+        }
+
+        void OnLeave(LeaveEventArgs args)
+        {
+            Timer cd = new Timer(Config.cooldown * 1000);
+            string user = TShock.Players[args.Who].User.Name;
+            if (user == currentUser)
+            {
+                TSPlayer.All.SendWarningMessage("{0} has forfeited {1} points in Double or Nothing by not collecting in time!", currentUser, donval);
+                currentUser = "None";
+                donval = 1;
+                t.Stop();
+                cd.Elapsed += new ElapsedEventHandler(OnCooldownFinish); ;
+                cd.AutoReset = false;
+                cd.Start();
+            }
         }
 
         void Reload(CommandArgs args)
@@ -178,6 +196,12 @@ namespace DoubleOrNothing
 
                                             else
                                             {
+                                                if (donval == 1024)
+                                                {
+                                                    t.Stop();
+                                                    t.Start();
+                                                }
+
                                                 donval *= 2;
                                                 t.Stop();
                                                 t.Start();
