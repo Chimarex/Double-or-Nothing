@@ -196,12 +196,6 @@ namespace DoubleOrNothing
 
                                             else
                                             {
-                                                if (donval == 1024)
-                                                {
-                                                    t.Stop();
-                                                    t.Start();
-                                                }
-
                                                 donval *= 2;
                                                 t.Stop();
                                                 t.Start();
