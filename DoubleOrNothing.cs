@@ -18,25 +18,10 @@ namespace DoubleOrNothing
         int donval = 1;
         bool inProgress = false;
 
-        public override string Name
-        {
-            get { return "Double or Nothing"; }
-        }
-
-        public override Version Version
-        {
-            get { return new Version(1, 0); }
-        }
-
-        public override string Author
-        {
-            get { return "Chimarex"; }
-        }
-
-        public override string Description
-        {
-            get { return "A fun plugin which allows you to gamble with configurable payment and rewards!"; }
-        }
+        public override string Name { get { return "Double or Nothing"; }}
+        public override Version Version { get { return new Version(1, 0); }}
+        public override string Author { get { return "Chimarex"; }}
+        public override string Description { get { return "A fun plugin which allows you to gamble with configurable payment and rewards!"; }}
 
         public override void Initialize()
         {
