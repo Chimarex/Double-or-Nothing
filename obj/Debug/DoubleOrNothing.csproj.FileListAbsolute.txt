@@ -1,0 +1,10 @@
+C:\Users\Ben\Downloads\Double-or-Nothing-master\bin\Debug\DoubleOrNothing.dll
+C:\Users\Ben\Downloads\Double-or-Nothing-master\bin\Debug\DoubleOrNothing.pdb
+C:\Users\Ben\Downloads\Double-or-Nothing-master\obj\Debug\DoubleOrNothing.csprojResolveAssemblyReference.cache
+C:\Users\Ben\Downloads\Double-or-Nothing-master\obj\Debug\DoubleOrNothing.dll
+C:\Users\Ben\Downloads\Double-or-Nothing-master\obj\Debug\DoubleOrNothing.pdb
+C:\Users\Ben\Documents\DoubleOrNothing\Double-or-Nothing\bin\Debug\DoubleOrNothing.dll
+C:\Users\Ben\Documents\DoubleOrNothing\Double-or-Nothing\bin\Debug\DoubleOrNothing.pdb
+C:\Users\Ben\Documents\DoubleOrNothing\Double-or-Nothing\obj\Debug\DoubleOrNothing.csprojResolveAssemblyReference.cache
+C:\Users\Ben\Documents\DoubleOrNothing\Double-or-Nothing\obj\Debug\DoubleOrNothing.dll
+C:\Users\Ben\Documents\DoubleOrNothing\Double-or-Nothing\obj\Debug\DoubleOrNothing.pdb
