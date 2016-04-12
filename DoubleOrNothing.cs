@@ -8,7 +8,7 @@ using TShockAPI;
 
 namespace DoubleOrNothing
 {
-    [ApiVersion(1, 21)]
+    [ApiVersion(1, 22)]
     public class DoubleOrNothing : TerrariaPlugin
     {
         Timer Timer;
@@ -41,6 +41,7 @@ namespace DoubleOrNothing
         public override void Initialize()
         {
             ServerApi.Hooks.GameInitialize.Register(this, OnInitialize);
+ /* ServerApi.Hooks.ServerLeave.Register(this, OnLeave); */
         }
 
         protected override void Dispose(bool disposing)
@@ -48,6 +49,7 @@ namespace DoubleOrNothing
             if (disposing)
             {
                 ServerApi.Hooks.GameInitialize.Deregister(this, OnInitialize);
+/* ServerApi.Hooks.ServerLeave.Deregister(this, OnLeave); */
             }
             base.Dispose(disposing);
         }
@@ -64,6 +66,7 @@ namespace DoubleOrNothing
                 HelpDesc = new[]
                 {
                            "/gamble start - Begins a game of Double or Nothing.",
+                           "/gamble help - Displays Commands And Starting Fee.",
                            "/gamble info - Displays information about a game of Double or Nothing in progress.",
                            "/gamble rewards - Displays rewards as set by the server administrator."
                 }
@@ -77,6 +80,22 @@ namespace DoubleOrNothing
             Config.Write(Path.Combine(TShock.SavePath, "donconfig.json"));
         }
 
+      /*  void OnLeave(LeaveEventArgs args)
+        {
+            Timer cd = new Timer(Config.cooldown * 1000);
+            string user = TShock.Players[args.Who].User.Name;
+            if (user == currentUser)
+            {
+                TSPlayer.All.SendWarningMessage("{0} has forfeited {1} points in Double or Nothing by not collecting in time!", currentUser, donval);
+                currentUser = "None";
+                donval = 1;
+                t.Stop();
+                cd.Elapsed += new ElapsedEventHandler(OnCooldownFinish); ;
+                cd.AutoReset = false;
+                cd.Start();
+            }
+            
+        }*/
 
         void DoNMain(CommandArgs args)
         {
@@ -125,8 +144,9 @@ namespace DoubleOrNothing
                                             currentUser = user.Name;
                                             t.Elapsed += new ElapsedEventHandler(OnTimedEvent); ;
                                             t.Start();
-                                            TSPlayer.All.SendSuccessMessage("{0} has started a game of Double or Nothing! Current Points: {1}", currentUser, donval);
-                                            user.SendInfoMessage("You have payed {0} {1}{2}!", Config.stackReq, iReq.name, plur);
+                                            TSPlayer.All.SendSuccessMessage("{0} has started a game of Double or Nothing!", currentUser, donval);
+                                            user.SendInfoMessage("You have paid {0} {1}{2}!", Config.stackReq, iReq.name, plur);
+                                            user.SendInfoMessage("You currently have {0} points", donval);
                                             user.SendMessage("Continue: '/gamble continue', Claim: '/gamble claim'", Color.DarkGoldenrod);
                                             user.SendMessage("You must make a decision within 15 seconds.", Color.DarkGoldenrod);
                                             return;
@@ -143,6 +163,7 @@ namespace DoubleOrNothing
 
                     case "continue":
                         {
+
                             if (inProgress == true)
                             {
                                 if (currentUser == user.Name)
@@ -181,6 +202,11 @@ namespace DoubleOrNothing
                                         }
                                     }
                                     user.SendErrorMessage("To play Double or Nothing you must have a free inventory slot!");
+                                    return;
+                                }
+                                else if (currentUser == "None")
+                                {
+                                    user.SendErrorMessage("Double or Nothing is on Cooldown!");
                                     return;
                                 }
                                 user.SendErrorMessage("Somebody else is currently playing Double or Nothing!");
@@ -316,7 +342,23 @@ namespace DoubleOrNothing
                             user.SendInfoMessage("/gamble start - Begins a game of Double or Nothing.");
                             user.SendInfoMessage("/gamble info - Displays information about a game of Double or Nothing in progress.");
                             user.SendInfoMessage("/gamble rewards - Displays rewards as set by the server administrator.");
+                            if (user.Group.HasPermission("gamble.admin"))
+                            {
+                                user.SendInfoMessage("/gamble reload - Reloads Plugin and Config File");
+                            }
                             user.SendInfoMessage("Starting Fee: {0} {1}{2}", Config.stackReq, iReq.name, plur);
+                            break;
+                        }
+
+                    case "reload":
+                        {
+                            if (!user.Group.HasPermission("gamble.admin"))
+                            {
+                                user.SendErrorMessage("You do not have access to this command.");
+                                break;
+                            }
+                            Config = Config.Read(Path.Combine(TShock.SavePath, "donconfig.json"));
+                            user.SendSuccessMessage("Reload Successful!");
                             break;
                         }
 
